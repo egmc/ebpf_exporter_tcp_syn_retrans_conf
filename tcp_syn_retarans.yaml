@@ -1,0 +1,48 @@
+programs:
+  # Count SYN Retrans with key bellow, destination addwss
+  - name: sysnretrans
+    metrics:
+      counters:
+        - name: syn_retrans
+          help: TCP SYN Retrans Count
+          table: ipv4_count
+          labels:
+            - name: daddr
+              size: 4
+              decoders:
+                - name: inet_ip
+            - name: dport
+              size: 4
+              decoders:
+                - name: string
+                - name: uint
+    tracepoints:
+      tcp:tcp_retransmit_skb: tracepoint__tcp__tcp_retransmit_skb
+    code: |
+      #include <net/sock.h>
+
+      #define SYN_SENT  2
+
+      struct ipv4_flow_key_t {
+          u32 daddr;
+          u16 dport;
+      };
+      BPF_HASH(ipv4_count, struct ipv4_flow_key_t);
+
+      TRACEPOINT_PROBE(tcp, tcp_retransmit_skb)
+      {
+          const struct sock *skp = (const struct sock *)args->skaddr;
+          u16 dport = args->dport;
+          u16 family = skp->__sk_common.skc_family;
+
+          if (skp->__sk_common.skc_state == SYN_SENT) {
+
+              if (family == AF_INET) {
+                     struct ipv4_flow_key_t flow_key = {};
+                     __builtin_memcpy(&flow_key.daddr, args->daddr, sizeof(flow_key.daddr));
+                     flow_key.dport = dport;
+                     ipv4_count.increment(flow_key);
+              }
+          }
+          return 0;
+      }

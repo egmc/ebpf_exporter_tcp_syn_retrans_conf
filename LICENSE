@@ -186,7 +186,7 @@
       same "printed page" as the copyright notice for easier
       identification within third-party archives.
 
-   Copyright [yyyy] [name of copyright owner]
+   Copyright [2020] [egmc]
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -199,3 +199,12 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
+
+
+   Original Code is from https://github.com/iovisor/bcc/blob/master/tools/tcpretrans.py on Oct 19, 2020
+
+   # Copyright 2016 Netflix, Inc.
+   # Licensed under the Apache License, Version 2.0 (the "License")
+   #
+   # 14-Feb-2016   Brendan Gregg   Created this.
+   # 03-Nov-2017   Matthias Tafelmeier Extended this.
